@@ -7,6 +7,10 @@ import CalorieTracker from "@/components/CalorieTracker";
 import FastingTimer from "@/components/FastingTimer";
 import WaterTracker from "@/components/WaterTracker";
 import { handleSignOut } from "@/app/actions/mealActions";
+import { Database } from "@/utils/supabase/database.types";
+
+type MealRow = Database["public"]["Tables"]["meals"]["Row"];
+type FastRow = Database["public"]["Tables"]["fasts"]["Row"];
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -16,16 +20,18 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const { data: meals } = await supabase
+  const { data: mealsData } = await supabase
     .from("meals")
     .select("*")
     .order("created_at", { ascending: false });
+  const meals = mealsData as MealRow[] | null;
 
-  const { data: fasts } = await supabase
+  const { data: fastsData } = await supabase
     .from("fasts")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
+  const fasts = fastsData as FastRow[] | null;
 
   const { data: goalData } = await supabase
     .from("user_goals")
