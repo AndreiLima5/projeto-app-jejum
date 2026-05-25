@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { LoginSchema, RegisterSchema, ForgotPasswordSchema } from "@/lib/validations/auth";
+import { LoginSchema, RegisterSchema, ForgotPasswordSchema } from "@/lib/supabase/validations/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
