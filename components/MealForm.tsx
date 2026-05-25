@@ -7,7 +7,6 @@ export default function MealForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [dateTime, setDateTime] = useState("");
 
-  // Pega a data e hora exatas do computador do usuário ao carregar a tela
   useEffect(() => {
     const agora = new Date();
     agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
@@ -16,7 +15,6 @@ export default function MealForm() {
 
   const handleSubmit = async (formData: FormData) => {
     await addMeal(formData);
-    // Limpa a descrição e calorias, mas mantém a data
     if (formRef.current) {
       formRef.current.description.value = "";
       formRef.current.calories.value = "";
@@ -53,7 +51,6 @@ export default function MealForm() {
           </div>
         </div>
 
-        {/* NOVO CAMPO: Data e Hora */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Data e Hora</label>
           <input 

@@ -34,8 +34,7 @@ export async function registerAction(formData: unknown) {
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      // O Supabase por padrão exige confirmação por e-mail. 
-      // Se desativar isso no painel do Supabase, o utilizador faz login direto.
+      
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/callback`,
     },
   });

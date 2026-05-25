@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 // Livro de regras do Zod para Refeições
 const mealSchema = z.object({
@@ -10,6 +11,15 @@ const mealSchema = z.object({
   calories: z.coerce.number().min(1, "A refeição deve ter pelo menos 1 caloria."),
   meal_type: z.enum(["Café da Manhã", "Almoço", "Lanche", "Jantar", "Ceia"]),
 });
+
+// Tradutor universal para o Supabase (Zod aprova a chave, Supabase recebe o valor)
+const mapeamentoTipos: { [key: string]: string } = {
+  "Café da Manhã": "café",
+  "Almoço": "almoço",
+  "Lanche": "lanche",
+  "Jantar": "jantar",
+  "Ceia": "ceia"
+};
 
 // 1. CREATE (Adicionar)
 export async function addMeal(formData: FormData) {
@@ -39,15 +49,18 @@ export async function addMeal(formData: FormData) {
     // Usamos os dados "limpos" e validados pelo Zod
     description: validatedFields.data.description,
     calories: validatedFields.data.calories,
-    meal_type: validatedFields.data.meal_type,
+    // A Mágica: Traduz o texto para o formato que o banco de dados exige
+    meal_type: mapeamentoTipos[validatedFields.data.meal_type],
     created_at: createdAt, 
   };
 
-  const { error } = await supabase.from("meals" as any).insert(newMeal);
+  const { error } = await supabase.from("meals").insert(newMeal);
 
-  if (error) throw new Error("Falha ao registrar a refeição.");
+  if (error) {
+    console.error("Erro ao salvar no banco:", error);
+    throw new Error("Falha ao registrar a refeição.");
+  }
   
-  const { revalidatePath } = require("next/cache");
   revalidatePath("/dashboard");
 }
 
@@ -82,7 +95,8 @@ export async function updateMeal(formData: FormData) {
   const updatedData = {
     description: validatedFields.data.description,
     calories: validatedFields.data.calories,
-    meal_type: validatedFields.data.meal_type,
+    // Traduzimos a refeição na atualização também!
+    meal_type: mapeamentoTipos[validatedFields.data.meal_type],
   };
 
   const { error } = await supabase
@@ -132,6 +146,5 @@ export async function handleSignOut() {
   
   await supabase.auth.signOut();
   
-  const { redirect } = require("next/navigation");
   redirect("/login");
 }

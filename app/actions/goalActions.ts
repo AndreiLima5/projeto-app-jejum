@@ -4,7 +4,6 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function saveGoal(formData: FormData) {
-  // Desligamos a tipagem estrita aqui para evitar telas vermelhas
   const supabase = (await createClient()) as any;
   
   const { data: { user }, error: authError } = await supabase.auth.getUser();
