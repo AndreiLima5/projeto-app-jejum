@@ -8,6 +8,7 @@ import FastingTimer from "@/components/FastingTimer";
 import WaterTracker from "@/components/WaterTracker";
 import { handleSignOut } from "@/app/actions/mealActions";
 import { Database } from "@/utils/supabase/database.types";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type MealRow = Database["public"]["Tables"]["meals"]["Row"];
 type FastRow = Database["public"]["Tables"]["fasts"]["Row"];
@@ -64,14 +65,17 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <form action={handleSignOut} className="self-end sm:self-auto">
-            <button
-              type="submit"
-              className="text-sm font-medium text-red-600 hover:text-red-500 transition-colors cursor-pointer bg-transparent border-0"
-            >
-              Sair
-            </button>
-          </form>
+          <div className="flex flex-row items-center gap-4 self-end sm:self-auto">
+            <ThemeToggle />
+            <form action={handleSignOut} className="flex items-center">
+              <button 
+                type="submit" 
+                className="text-sm font-medium text-red-600 hover:text-red-500 transition-colors cursor-pointer bg-transparent border-0"
+              >
+                Sair
+              </button>
+            </form>
+          </div>
         </header>
 
         {/* Painel Diário de Metas */}
